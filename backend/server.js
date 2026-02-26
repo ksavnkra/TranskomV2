@@ -11,7 +11,7 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 // Validate critical env vars
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'CHANGE_ME_TO_A_RANDOM_64_CHAR_STRING') {
     console.error('FATAL: JWT_SECRET is not set or is using the default placeholder. Set it in .env');
-    process.exit(1);
+    if (!process.env.VERCEL) process.exit(1);
 }
 
 const app = express();
@@ -32,7 +32,11 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '1mb' }));
-app.use(express.static(path.join(__dirname, '../frontend'))); // Serve static files
+
+// Serve static frontend files (only if the folder exists — not on Vercel)
+const frontendPath = path.join(__dirname, '../frontend');
+try { require('fs').accessSync(frontendPath); app.use(express.static(frontendPath)); }
+catch { /* frontend folder not available in serverless */ }
 
 // Global rate limiter — 100 requests per 15 min per IP
 const globalLimiter = rateLimit({

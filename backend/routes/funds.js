@@ -7,11 +7,20 @@ const Transaction = require('../models/Transaction');
 const auth = require('../middleware/auth');
 const { notifyWithdrawal } = require('../utils/notifications');
 
-// --------------- Razorpay Instance ---------------
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// --------------- Razorpay Instance (lazy — only created when actually needed) ---------------
+let razorpay = null;
+function getRazorpay() {
+    if (!razorpay) {
+        if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+            throw new Error('Razorpay keys not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env');
+        }
+        razorpay = new Razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET
+        });
+    }
+    return razorpay;
+}
 
 // --------------- Wallet helpers (same as transactions.js) ---------------
 function getBalance(user, currency) {
@@ -74,7 +83,7 @@ router.post('/create-order', auth, async (req, res) => {
             }
         };
 
-        const order = await razorpay.orders.create(options);
+        const order = await getRazorpay().orders.create(options);
 
         res.json({
             orderId: order.id,
