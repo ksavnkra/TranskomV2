@@ -66,6 +66,7 @@ mongoose.connection.on('disconnected', () => console.warn('MongoDB disconnected.
 // --------------- Routes ---------------
 app.use('/api/auth', authLimiter, require('./routes/auth'));
 app.use('/api/transactions', require('./routes/transactions'));
+app.use('/api/funds', require('./routes/funds'));
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/chat', require('./routes/chat'));
 

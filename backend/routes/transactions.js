@@ -7,8 +7,6 @@ const auth = require('../middleware/auth');
 const { notifySell } = require('../utils/notifications');
 
 // --------------- Constants ---------------
-// Wallet currencies — only these can be held in user accounts
-const WALLET_CURRENCIES = ['USD', 'INR', 'AED', 'EUR'];
 const TRANSACTION_FEE = 0.015; // 1.5%
 const EXCHANGE_RATE_API = 'https://api.exchangerate-api.com/v4/latest/';
 // Valid currency code format (3 uppercase letters)
@@ -32,8 +30,25 @@ function validateCurrencyCode(currency) {
     return typeof currency === 'string' && CURRENCY_CODE_REGEX.test(currency);
 }
 
-function isWalletCurrency(currency) {
-    return WALLET_CURRENCIES.includes(currency);
+// --------------- Wallet helpers (Map-based) ---------------
+function getBalance(user, currency) {
+    return user.wallet.get(currency) || 0;
+}
+
+function addBalance(user, currency, amount) {
+    user.wallet.set(currency, getBalance(user, currency) + amount);
+}
+
+function subtractBalance(user, currency, amount) {
+    user.wallet.set(currency, getBalance(user, currency) - amount);
+}
+
+function walletToObject(user) {
+    const obj = {};
+    for (const [key, val] of user.wallet) {
+        if (val !== 0) obj[key] = val;
+    }
+    return obj;
 }
 
 // @route   GET /api/transactions/rate
@@ -68,10 +83,6 @@ router.post('/buy', auth, async (req, res) => {
         if (fromCurrency === toCurrency) {
             return res.status(400).json({ message: 'Cannot exchange same currency.' });
         }
-        // toCurrency must be a wallet currency (USD, INR, AED, EUR) to credit
-        if (!isWalletCurrency(toCurrency)) {
-            return res.status(400).json({ message: `Cannot receive ${toCurrency}. Wallet supports: ${WALLET_CURRENCIES.join(', ')}` });
-        }
 
         const amount = Number(fromAmount);
         if (!amount || amount <= 0 || !isFinite(amount)) {
@@ -80,6 +91,11 @@ router.post('/buy', auth, async (req, res) => {
 
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check sufficient balance of the paying currency
+        if (getBalance(user, fromCurrency) < amount) {
+            return res.status(400).json({ message: `Insufficient ${fromCurrency} balance. You have ${getBalance(user, fromCurrency).toFixed(2)} ${fromCurrency}. Add funds first.` });
+        }
 
         // Server-side exchange rate calculation
         const rate = await getExchangeRate(fromCurrency, toCurrency);
@@ -93,12 +109,12 @@ router.post('/buy', auth, async (req, res) => {
             toCurrency,
             fromAmount: amount,
             toAmount,
-            status: 'completed' // In real app with Razorpay, start as 'pending'
+            status: 'completed'
         });
 
-        // Update Wallet — add received currency
-        // For buy: user pays external money (Razorpay) and receives toCurrency in wallet
-        user.wallet[toCurrency] = (user.wallet[toCurrency] || 0) + toAmount;
+        // Deduct paying currency and add received currency
+        subtractBalance(user, fromCurrency, amount);
+        addBalance(user, toCurrency, toAmount);
 
         await transaction.save();
         await user.save();
@@ -112,7 +128,7 @@ router.post('/buy', auth, async (req, res) => {
                 rate,
                 fee: `${TRANSACTION_FEE * 100}%`
             },
-            wallet: user.wallet
+            wallet: walletToObject(user)
         });
     } catch (err) {
         console.error('Buy transaction error:', err.message);
@@ -133,10 +149,6 @@ router.post('/sell', auth, async (req, res) => {
         if (fromCurrency === toCurrency) {
             return res.status(400).json({ message: 'Cannot exchange same currency.' });
         }
-        // fromCurrency must be a wallet currency (user is selling from wallet)
-        if (!isWalletCurrency(fromCurrency)) {
-            return res.status(400).json({ message: `Cannot sell ${fromCurrency}. Wallet supports: ${WALLET_CURRENCIES.join(', ')}` });
-        }
 
         const amount = Number(fromAmount);
         if (!amount || amount <= 0 || !isFinite(amount)) {
@@ -147,7 +159,7 @@ router.post('/sell', auth, async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check sufficient balance
-        if ((user.wallet[fromCurrency] || 0) < amount) {
+        if (getBalance(user, fromCurrency) < amount) {
             return res.status(400).json({ message: 'Insufficient balance in wallet.' });
         }
 
@@ -167,8 +179,8 @@ router.post('/sell', auth, async (req, res) => {
         });
 
         // Deduct from wallet and add converted amount
-        user.wallet[fromCurrency] -= amount;
-        user.wallet[toCurrency] = (user.wallet[toCurrency] || 0) + toAmount;
+        subtractBalance(user, fromCurrency, amount);
+        addBalance(user, toCurrency, toAmount);
 
         await transaction.save();
         await user.save();
@@ -185,7 +197,7 @@ router.post('/sell', auth, async (req, res) => {
                 rate,
                 fee: `${TRANSACTION_FEE * 100}%`
             },
-            wallet: user.wallet
+            wallet: walletToObject(user)
         });
     } catch (err) {
         console.error('Sell transaction error:', err.message);

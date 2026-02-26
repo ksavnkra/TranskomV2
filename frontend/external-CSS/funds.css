@@ -1,0 +1,395 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #f1f5f9;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.topbar-left img {
+    width: 36px;
+    height: 36px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.topbar-user {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.btn-logout {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background: #dc2626;
+}
+
+/* ===== PAGE LAYOUT ===== */
+.funds-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.page-header h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+}
+
+.page-header h1 i {
+    color: #60a5fa;
+    margin-right: 8px;
+}
+
+.page-header p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+/* ===== SECTION CARDS ===== */
+.section-card {
+    background: #1e293b;
+    border-radius: 16px;
+    border: 1px solid #334155;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.section-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #334155;
+}
+
+.section-header h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.section-header h2 i {
+    margin-right: 8px;
+    color: #60a5fa;
+}
+
+.section-header.add h2 i {
+    color: #34d399;
+}
+
+.section-header.withdraw h2 i {
+    color: #f87171;
+}
+
+.section-body {
+    padding: 24px;
+}
+
+/* ===== WALLET GRID ===== */
+.wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.wallet-card {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s;
+}
+
+.wallet-card:hover {
+    border-color: #60a5fa;
+}
+
+.wallet-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.wallet-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.wallet-currency {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.wallet-amount {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.wallet-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 32px 16px;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.wallet-empty i {
+    margin-right: 6px;
+}
+
+/* ===== ACTION ROW ===== */
+.action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* ===== FORMS ===== */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #f1f5f9;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+    border-color: #60a5fa;
+}
+
+.form-group select option {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+
+.balance-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #60a5fa;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.btn-action {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+}
+
+.btn-add {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff;
+}
+
+.btn-add:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-1px);
+}
+
+.btn-withdraw {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: #fff;
+}
+
+.btn-withdraw:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    transform: translateY(-1px);
+}
+
+.btn-action:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===== TRANSACTIONS TABLE ===== */
+.txn-wrapper {
+    overflow-x: auto;
+}
+
+.txn-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.txn-table thead th {
+    text-align: left;
+    padding: 12px 20px;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #334155;
+}
+
+.txn-table tbody td {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    color: #cbd5e1;
+}
+
+.txn-table tbody tr:hover {
+    background: rgba(96, 165, 250, 0.04);
+}
+
+.txn-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.txn-badge.buy {
+    background: rgba(52, 211, 153, 0.15);
+    color: #34d399;
+}
+
+.txn-badge.sell {
+    background: rgba(248, 113, 113, 0.15);
+    color: #f87171;
+}
+
+.txn-badge.deposit {
+    background: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+}
+
+.txn-badge.withdrawal {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+}
+
+.txn-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.txn-empty i {
+    margin-right: 6px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .topbar {
+        padding: 10px 16px;
+    }
+
+    .funds-page {
+        padding: 20px 14px 40px;
+    }
+
+    .action-row {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar-user {
+        display: none;
+    }
+
+    .page-header h1 {
+        font-size: 1.3rem;
+    }
+}

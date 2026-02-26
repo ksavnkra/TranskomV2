@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSKOM : Add / Withdraw Funds</title>
+    <link rel="icon" type="image/png" href="rsrc/transkom_logo_1.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="external-CSS/funds.css">
+</head>
+
+<body>
+    <!-- ===== TOP BAR ===== -->
+    <header class="topbar">
+        <a href="index.html" class="topbar-left">
+            <img src="rsrc/transkom_logo_1.png" alt="Transkom">
+            <span>Transkom</span>
+        </a>
+        <div class="topbar-right">
+            <span class="topbar-user" id="topbar-name"></span>
+            <button class="btn-logout" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="funds-page">
+        <a href="index.html"
+            style="display:inline-flex;align-items:center;gap:6px;color:#60a5fa;text-decoration:none;font-size:0.9rem;font-weight:500;margin-bottom:20px;">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+
+        <div class="page-header">
+            <h1><i class="fas fa-wallet"></i> Add / Withdraw Funds</h1>
+            <p>Manage your wallet balance. Add funds via Razorpay or withdraw to your account.</p>
+        </div>
+
+        <!-- Wallet Overview -->
+        <div class="section-card wallet-overview">
+            <div class="section-header">
+                <h2><i class="fas fa-coins"></i> Your Wallet</h2>
+            </div>
+            <div class="section-body">
+                <div class="wallet-grid" id="wallet-grid">
+                    <div class="wallet-empty">
+                        <i class="fas fa-spinner fa-spin"></i> Loading wallet...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Cards -->
+        <div class="action-row">
+            <!-- Add Funds Card -->
+            <div class="section-card action-card">
+                <div class="section-header add">
+                    <h2><i class="fas fa-plus-circle"></i> Add Funds</h2>
+                </div>
+                <div class="section-body">
+                    <form id="addFundsForm" onsubmit="handleAddFunds(event)">
+                        <div class="form-group">
+                            <label for="addCurrency">Currency</label>
+                            <select id="addCurrency">
+                                <option value="INR">INR - Indian Rupee</option>
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                                <option value="AUD">AUD - Australian Dollar</option>
+                                <option value="CAD">CAD - Canadian Dollar</option>
+                                <option value="SGD">SGD - Singapore Dollar</option>
+                                <option value="AED">AED - UAE Dirham</option>
+                                <option value="HKD">HKD - Hong Kong Dollar</option>
+                                <option value="MYR">MYR - Malaysian Ringgit</option>
+                                <option value="ZAR">ZAR - South African Rand</option>
+                                <option value="CNY">CNY - Chinese Yuan</option>
+                                <option value="SEK">SEK - Swedish Krona</option>
+                                <option value="NZD">NZD - New Zealand Dollar</option>
+                                <option value="MXN">MXN - Mexican Peso</option>
+                                <option value="THB">THB - Thai Baht</option>
+                                <option value="TRY">TRY - Turkish Lira</option>
+                                <option value="SAR">SAR - Saudi Riyal</option>
+                                <option value="QAR">QAR - Qatari Rial</option>
+                                <option value="PHP">PHP - Philippine Peso</option>
+                                <option value="PKR">PKR - Pakistani Rupee</option>
+                                <option value="NGN">NGN - Nigerian Naira</option>
+                                <option value="EGP">EGP - Egyptian Pound</option>
+                                <option value="BDT">BDT - Bangladeshi Taka</option>
+                                <option value="LKR">LKR - Sri Lankan Rupee</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addAmount">Amount</label>
+                            <input type="number" id="addAmount" placeholder="Enter amount" min="1" step="0.01"
+                                required>
+                        </div>
+                        <button type="submit" class="btn-action btn-add" id="btn-add-funds">
+                            <i class="fas fa-credit-card"></i> Pay with Razorpay
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Withdraw Funds Card -->
+            <div class="section-card action-card">
+                <div class="section-header withdraw">
+                    <h2><i class="fas fa-minus-circle"></i> Withdraw Funds</h2>
+                </div>
+                <div class="section-body">
+                    <form id="withdrawForm" onsubmit="handleWithdraw(event)">
+                        <div class="form-group">
+                            <label for="withdrawCurrency">Currency</label>
+                            <select id="withdrawCurrency">
+                                <option value="" disabled selected>— Select from wallet —</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="withdrawAmount">Amount</label>
+                            <input type="number" id="withdrawAmount" placeholder="Enter amount" min="0.01"
+                                step="0.01" required>
+                            <small class="balance-hint" id="balance-hint"></small>
+                        </div>
+                        <button type="submit" class="btn-action btn-withdraw" id="btn-withdraw">
+                            <i class="fas fa-money-bill-wave"></i> Withdraw
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Fund Transactions -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Recent Transactions</h2>
+            </div>
+            <div class="section-body" style="padding:0">
+                <div id="txn-container" class="txn-wrapper">
+                    <div class="txn-empty">
+                        <i class="fas fa-spinner fa-spin"></i> Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        // ===================== FUNDS PAGE LOGIC =====================
+        const API_BASE = '/api';
+        let walletData = {};
+
+        // ---- Auth ----
+        function getToken() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'auth.html'; return null; }
+            return token;
+        }
+        function authHeaders() {
+            return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' };
+        }
+
+        // ---- Logout ----
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        });
+
+        // ---- Format number ----
+        function fmt(n) {
+            return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ---- Load wallet ----
+        async function loadWallet() {
+            try {
+                const res = await fetch(`${API_BASE}/auth/me`, { headers: authHeaders() });
+                if (!res.ok) {
+                    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = 'auth.html'; }
+                    return;
+                }
+                const user = await res.json();
+
+                // Top bar name
+                document.getElementById('topbar-name').textContent =
+                    `${user.firstName || ''} ${user.lastName || ''}`.trim();
+
+                walletData = user.wallet || {};
+                renderWallet();
+                populateWithdrawCurrencies();
+            } catch (err) {
+                console.error('Failed to load wallet:', err);
+            }
+        }
+
+        function renderWallet() {
+            const grid = document.getElementById('wallet-grid');
+            const entries = Object.entries(walletData)
+                .filter(([, val]) => val > 0)
+                .sort((a, b) => b[1] - a[1]);
+
+            if (entries.length === 0) {
+                grid.innerHTML = `<div class="wallet-empty"><i class="fas fa-coins"></i> No funds yet. Add your first funds!</div>`;
+                return;
+            }
+
+            grid.innerHTML = entries.map(([cur, amt]) => `
+                <div class="wallet-card">
+                    <div class="wallet-icon">${cur}</div>
+                    <div class="wallet-info">
+                        <span class="wallet-currency">${cur}</span>
+                        <span class="wallet-amount">${fmt(amt)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateWithdrawCurrencies() {
+            const select = document.getElementById('withdrawCurrency');
+            select.innerHTML = '';
+            const entries = Object.entries(walletData).filter(([, val]) => val > 0);
+
+            if (entries.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = '— No currencies available —';
+                opt.disabled = true;
+                opt.selected = true;
+                select.appendChild(opt);
+                return;
+            }
+
+            entries.sort((a, b) => a[0].localeCompare(b[0])).forEach(([cur, amt]) => {
+                const opt = document.createElement('option');
+                opt.value = cur;
+                opt.textContent = `${cur} (Balance: ${fmt(amt)})`;
+                select.appendChild(opt);
+            });
+
+            // Show balance hint on change
+            select.addEventListener('change', () => {
+                const cur = select.value;
+                const bal = walletData[cur] || 0;
+                document.getElementById('balance-hint').textContent = bal > 0 ? `Available: ${fmt(bal)} ${cur}` : '';
+            });
+
+            // Trigger initial
+            if (entries.length > 0) {
+                select.value = entries[0][0];
+                select.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // ---- Add Funds via Razorpay ----
+        async function handleAddFunds(e) {
+            e.preventDefault();
+            const currency = document.getElementById('addCurrency').value;
+            const amount = parseFloat(document.getElementById('addAmount').value);
+            const btn = document.getElementById('btn-add-funds');
+
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating order...';
+
+            try {
+                // 1. Create order on backend
+                const orderRes = await fetch(`${API_BASE}/funds/create-order`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ amount, currency })
+                });
+
+                const orderData = await orderRes.json();
+                if (!orderRes.ok) {
+                    alert(orderData.message || 'Failed to create order.');
+                    return;
+                }
+
+                // 2. Open Razorpay checkout
+                const options = {
+                    key: orderData.keyId,
+                    amount: orderData.amount * 100,
+                    currency: orderData.currency,
+                    name: 'Transkom',
+                    description: `Add ${orderData.amount} ${orderData.currency} to wallet`,
+                    order_id: orderData.orderId,
+                    handler: async function (response) {
+                        // 3. Verify payment on backend
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+                        try {
+                            const verifyRes = await fetch(`${API_BASE}/funds/verify-payment`, {
+                                method: 'POST',
+                                headers: authHeaders(),
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    amount: orderData.amount,
+                                    currency: orderData.currency
+                                })
+                            });
+                            const verifyData = await verifyRes.json();
+                            if (verifyRes.ok) {
+                                alert(`${verifyData.message}\nCredited: ${verifyData.credited}`);
+                                document.getElementById('addFundsForm').reset();
+                                loadWallet();
+                                loadTransactions();
+                            } else {
+                                alert(verifyData.message || 'Verification failed.');
+                            }
+                        } catch (err) {
+                            console.error('Verify error:', err);
+                            alert('Payment verification failed. Please contact support.');
+                        }
+                    },
+                    prefill: {},
+                    theme: { color: '#0e57d7' },
+                    modal: {
+                        ondismiss: function () {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-credit-card"></i> Pay with Razorpay';
+                        }
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response) {
+                    alert('Payment failed: ' + response.error.description);
+                });
+                rzp.open();
+            } catch (err) {
+                console.error('Add funds error:', err);
+                alert('Failed to initiate payment.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-credit-card"></i> Pay with Razorpay';
+            }
+        }
+
+        // ---- Withdraw Funds ----
+        async function handleWithdraw(e) {
+            e.preventDefault();
+            const currency = document.getElementById('withdrawCurrency').value;
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const btn = document.getElementById('btn-withdraw');
+
+            if (!currency) {
+                alert('Please select a currency.');
+                return;
+            }
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+
+            const bal = walletData[currency] || 0;
+            if (amount > bal) {
+                alert(`Insufficient balance. Available: ${fmt(bal)} ${currency}`);
+                return;
+            }
+
+            if (!confirm(`Withdraw ${fmt(amount)} ${currency} from your wallet?`)) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            try {
+                const res = await fetch(`${API_BASE}/funds/withdraw`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ amount, currency })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`${data.message}\nDebited: ${data.debited}`);
+                    document.getElementById('withdrawForm').reset();
+                    document.getElementById('balance-hint').textContent = '';
+                    loadWallet();
+                    loadTransactions();
+                } else {
+                    alert(data.message || 'Withdrawal failed.');
+                }
+            } catch (err) {
+                console.error('Withdraw error:', err);
+                alert('Withdrawal failed. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-money-bill-wave"></i> Withdraw';
+            }
+        }
+
+        // ---- Load recent transactions ----
+        async function loadTransactions() {
+            const container = document.getElementById('txn-container');
+            try {
+                const res = await fetch(`${API_BASE}/transactions/history?page=1&limit=10`, {
+                    headers: authHeaders()
+                });
+                if (!res.ok) {
+                    container.innerHTML = '<div class="txn-empty"><i class="fas fa-exclamation-circle"></i> Could not load transactions.</div>';
+                    return;
+                }
+                const data = await res.json();
+                const txns = data.transactions || [];
+
+                if (txns.length === 0) {
+                    container.innerHTML = '<div class="txn-empty"><i class="fas fa-receipt"></i> No transactions yet.</div>';
+                    return;
+                }
+
+                const rows = txns.map(t => {
+                    const date = new Date(t.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const time = new Date(t.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    const isFundOp = t.fromCurrency === t.toCurrency;
+                    const label = isFundOp
+                        ? (t.type === 'buy' ? 'Deposit' : 'Withdrawal')
+                        : (t.type === 'buy' ? 'Buy' : 'Sell');
+                    const badgeClass = isFundOp ? (t.type === 'buy' ? 'deposit' : 'withdrawal') : t.type;
+
+                    return `<tr>
+                        <td><span class="txn-badge ${badgeClass}">${label}</span></td>
+                        <td>${t.fromAmount} ${t.fromCurrency}</td>
+                        <td>${t.toAmount} ${t.toCurrency}</td>
+                        <td>${date}<br><small style="color:#64748b">${time}</small></td>
+                    </tr>`;
+                }).join('');
+
+                container.innerHTML = `
+                    <table class="txn-table">
+                        <thead><tr><th>Type</th><th>From</th><th>To</th><th>Date</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            } catch (err) {
+                console.error('Failed to load transactions:', err);
+                container.innerHTML = '<div class="txn-empty"><i class="fas fa-exclamation-circle"></i> Error loading transactions.</div>';
+            }
+        }
+
+        // ---- Init ----
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWallet();
+            loadTransactions();
+        });
+    </script>
+</body>
+
+</html>

@@ -6,6 +6,115 @@ const TRANSACTION_FEE = 0.015; // 1.5% — for display only, enforced on server
 let currentMode = 'buy';
 let currentRate = null;
 
+// Store original <option> elements for payCurrency so we can restore them
+let allPayCurrencyOptions = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('payCurrency');
+    allPayCurrencyOptions = Array.from(select.options).map(opt => ({
+        value: opt.value,
+        text: opt.textContent
+    }));
+});
+
+// Cached wallet data for the current session
+let cachedWallet = {};
+
+// Fetch wallet from server (used by both buy and sell modes)
+async function fetchWalletData() {
+    const token = localStorage.getItem('token');
+    if (!token) return {};
+
+    try {
+        const res = await fetch('/api/auth/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return {};
+        const user = await res.json();
+        cachedWallet = user.wallet || {};
+        return cachedWallet;
+    } catch (err) {
+        console.error('Failed to fetch wallet:', err);
+        return {};
+    }
+}
+
+// Filter payCurrency dropdown to wallet-only (for sell mode) with balance shown
+async function filterPayCurrencyToWallet() {
+    const wallet = await fetchWalletData();
+
+    // Only currencies with balance > 0
+    const walletEntries = Object.entries(wallet).filter(([, val]) => val > 0);
+
+    const select = document.getElementById('payCurrency');
+    select.innerHTML = '';
+
+    if (walletEntries.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '— No currencies in wallet —';
+        opt.disabled = true;
+        opt.selected = true;
+        select.appendChild(opt);
+    } else {
+        const walletCodes = walletEntries.map(([code]) => code);
+        const matching = allPayCurrencyOptions.filter(o => walletCodes.includes(o.value));
+        matching.forEach(o => {
+            const bal = wallet[o.value] || 0;
+            const opt = document.createElement('option');
+            opt.value = o.value;
+            opt.textContent = `${o.text} (${bal.toFixed(2)})`;
+            select.appendChild(opt);
+        });
+    }
+
+    updateConversion();
+}
+
+// Filter payCurrency to wallet-only for buy mode (must have balance to pay)
+async function filterPayCurrencyForBuy() {
+    const wallet = await fetchWalletData();
+
+    const walletEntries = Object.entries(wallet).filter(([, val]) => val > 0);
+
+    const select = document.getElementById('payCurrency');
+    select.innerHTML = '';
+
+    if (walletEntries.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '— No funds — Add funds first —';
+        opt.disabled = true;
+        opt.selected = true;
+        select.appendChild(opt);
+    } else {
+        const walletCodes = walletEntries.map(([code]) => code);
+        const matching = allPayCurrencyOptions.filter(o => walletCodes.includes(o.value));
+        matching.forEach(o => {
+            const bal = wallet[o.value] || 0;
+            const opt = document.createElement('option');
+            opt.value = o.value;
+            opt.textContent = `${o.text} (${bal.toFixed(2)})`;
+            select.appendChild(opt);
+        });
+    }
+
+    updateConversion();
+}
+
+// Restore all currency options in payCurrency dropdown (no longer used — buy now also requires balance)
+function restoreAllPayCurrencyOptions() {
+    const select = document.getElementById('payCurrency');
+    select.innerHTML = '';
+    allPayCurrencyOptions.forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o.value;
+        opt.textContent = o.text;
+        select.appendChild(opt);
+    });
+    updateConversion();
+}
+
 // Fetch rate from our server (which fetches from exchange rate API)
 async function fetchExchangeRate(from, to) {
     try {
@@ -57,6 +166,13 @@ function setActiveTab(tab, mode) {
     document.getElementById('exchangeRate').innerHTML = 'Select currencies to see exchange rate';
     document.getElementById('feeInfo').innerHTML = 'Transkom\'s Transaction Fee: 1.5%';
     currentRate = null;
+
+    // Both modes require wallet balance to pay
+    if (mode === 'sell') {
+        filterPayCurrencyToWallet();
+    } else {
+        filterPayCurrencyForBuy();
+    }
 }
 
 async function handleSubmit(event) {
@@ -129,4 +245,7 @@ async function handleSubmit(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', updateConversion);
+document.addEventListener('DOMContentLoaded', () => {
+    // Default is buy mode — filter to wallet currencies
+    filterPayCurrencyForBuy();
+});

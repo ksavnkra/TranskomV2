@@ -2,188 +2,131 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRANSKOM : Profile</title>
-  <link rel="icon" type="image/png" href="rsrc/transkom_logo_1.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="./external-CSS/profile.css">
-  <style>
-    /* Enhanced profile styles */
-    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-    .wallet-card { background: #f0f4ff; border: 1px solid #d0daf5; border-radius: 10px; padding: 15px; text-align: center; }
-    .wallet-card .currency-label { font-size: 0.85rem; color: #666; margin-bottom: 4px; }
-    .wallet-card .currency-amount { font-size: 1.3rem; font-weight: 700; color: #0e57d7; }
-    .profile-field { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; }
-    .profile-field .field-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-    .profile-field .field-value { font-size: 1rem; color: #333; font-weight: 500; }
-    .back-link { display: inline-block; margin-bottom: 20px; color: #0e57d7; text-decoration: none; font-weight: 500; }
-    .back-link:hover { text-decoration: underline; }
-    .txn-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
-    .txn-table th, .txn-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
-    .txn-table th { background: #f0f4ff; color: #0e57d7; font-weight: 600; }
-    .txn-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    .txn-badge.buy { background: #dcfce7; color: #16a34a; }
-    .txn-badge.sell { background: #fee2e2; color: #dc2626; }
-    .loading-spinner { text-align: center; padding: 30px; color: #888; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSKOM : Dashboard</title>
+    <link rel="icon" type="image/png" href="rsrc/transkom_logo_1.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="external-CSS/profile.css">
 </head>
 
 <body>
-  <div class="container">
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
-
-    <div id="profile" class="tab-content active">
-      <div class="profile-header">
-        <h2 class="profile-title">Profile Information</h2>
-        <p class="profile-subtitle">Your account details and wallet balances</p>
-      </div>
-
-      <div class="profile-photo">
-        <img src="./rsrc/icons8-male-user-100.png" alt="Profile photo" class="avatar" id="profile-image">
-        <input type="file" id="photo-upload" hidden accept="image/*">
-        <button type="button" class="photo-button" onclick="document.getElementById('photo-upload').click()">
-          Change Photo
-        </button>
-      </div>
-
-      <div class="profile-field">
-        <div class="field-label">Full Name</div>
-        <div class="field-value" id="name">Loading...</div>
-      </div>
-      <div class="profile-field">
-        <div class="field-label">Email Address</div>
-        <div class="field-value" id="email">Loading...</div>
-      </div>
-      <div class="profile-field">
-        <div class="field-label">Phone Number</div>
-        <div class="field-value" id="phone">Loading...</div>
-      </div>
-
-      <h3 style="margin-top: 25px; margin-bottom: 5px;">Wallet Balances</h3>
-      <div class="wallet-grid">
-        <div class="wallet-card">
-          <div class="currency-label">USD — US Dollar</div>
-          <div class="currency-amount" id="usd-balance">0.00</div>
+    <!-- ===== TOP BAR ===== -->
+    <header class="topbar">
+        <a href="index.html" class="topbar-left">
+            <img src="rsrc/transkom_logo_1.png" alt="Transkom">
+            <span>Transkom</span>
+        </a>
+        <div class="topbar-right">
+            <span class="topbar-user" id="topbar-name"></span>
+            <button class="btn-logout" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
-        <div class="wallet-card">
-          <div class="currency-label">INR — Indian Rupee</div>
-          <div class="currency-amount" id="inr-balance">0.00</div>
+    </header>
+
+    <!-- ===== DASHBOARD ===== -->
+    <main class="dashboard">
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:#60a5fa;text-decoration:none;font-size:0.9rem;font-weight:500;margin-bottom:20px;">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+        <div class="dashboard-header">
+            <h1 id="greeting">Dashboard</h1>
+            <p>Manage your wallet, view transactions, and update your profile.</p>
         </div>
-        <div class="wallet-card">
-          <div class="currency-label">AED — UAE Dirham</div>
-          <div class="currency-amount" id="aed-balance">0.00</div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Currencies</div>
+                <div class="stat-value blue" id="stat-currencies">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value green" id="stat-transactions">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Member Since</div>
+                <div class="stat-value purple" id="stat-joined">—</div>
+            </div>
         </div>
-        <div class="wallet-card">
-          <div class="currency-label">EUR — Euro</div>
-          <div class="currency-amount" id="eur-balance">0.00</div>
+
+        <!-- Quick Actions -->
+        <div style="margin-bottom:24px;">
+            <a href="funds.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.9rem;transition:transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+                <i class="fas fa-wallet"></i> Add / Withdraw Funds
+            </a>
         </div>
-      </div>
 
-      <h3 style="margin-top: 30px;">Recent Transactions</h3>
-      <div id="transactions-container">
-        <div class="loading-spinner">Loading transactions...</div>
-      </div>
-    </div>
-  </div>
+        <!-- Profile Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2><i class="fas fa-user-circle"></i> Profile</h2>
+            </div>
+            <div class="section-body">
+                <div class="profile-grid">
+                    <div class="profile-avatar-area">
+                        <img src="rsrc/icons8-male-user-100.png" alt="Avatar" class="avatar" id="profile-image">
+                        <input type="file" id="photo-upload" hidden accept="image/*">
+                        <button class="btn-photo" onclick="document.getElementById('photo-upload').click()">
+                            <i class="fas fa-camera"></i> Change
+                        </button>
+                    </div>
+                    <div class="profile-fields">
+                        <div class="info-card">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value" id="info-name"><div class="skeleton" style="width:140px"></div></div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value" id="info-email"><div class="skeleton" style="width:180px"></div></div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value" id="info-phone"><div class="skeleton" style="width:130px"></div></div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Account Created</div>
+                            <div class="info-value" id="info-joined"><div class="skeleton" style="width:120px"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <script src="js/auth-check.js"></script>
-  <script>
-    // Profile photo preview
-    document.getElementById('photo-upload').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          document.getElementById('profile-image').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+        <!-- Wallet Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2><i class="fas fa-wallet"></i> Wallet</h2>
+            </div>
+            <div class="section-body">
+                <div class="wallet-grid" id="wallet-grid">
+                    <div class="wallet-empty">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Loading wallet...
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // Load user profile from backend
-    async function loadUserProfile() {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        window.location.href = "auth.html";
-        return;
-      }
+        <!-- Transactions Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Transaction History</h2>
+            </div>
+            <div class="section-body" style="padding: 0;">
+                <div class="txn-wrapper" id="txn-container">
+                    <div class="txn-empty">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Loading transactions...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-      try {
-        const response = await fetch('/api/auth/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          document.getElementById("name").textContent = `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
-          document.getElementById("email").textContent = userData.email || '';
-          document.getElementById("phone").textContent = userData.contactNumber || '';
-
-          if (userData.wallet) {
-            document.getElementById("usd-balance").textContent = (userData.wallet.USD || 0).toFixed(2);
-            document.getElementById("inr-balance").textContent = (userData.wallet.INR || 0).toFixed(2);
-            document.getElementById("aed-balance").textContent = (userData.wallet.AED || 0).toFixed(2);
-            document.getElementById("eur-balance").textContent = (userData.wallet.EUR || 0).toFixed(2);
-          }
-        } else {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location.href = "auth.html";
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        document.getElementById("name").textContent = "Error loading profile";
-      }
-    }
-
-    // Load transaction history
-    async function loadTransactions() {
-      const token = localStorage.getItem('token');
-      const container = document.getElementById('transactions-container');
-
-      try {
-        const response = await fetch('/api/transactions/history?limit=10', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const txns = data.transactions || [];
-
-          if (txns.length === 0) {
-            container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No transactions yet. Start trading!</p>';
-            return;
-          }
-
-          let html = '<table class="txn-table"><thead><tr><th>Type</th><th>From</th><th>To</th><th>Date</th></tr></thead><tbody>';
-          txns.forEach(t => {
-            const date = new Date(t.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            html += `<tr>
-              <td><span class="txn-badge ${t.type}">${t.type}</span></td>
-              <td>${t.fromAmount} ${t.fromCurrency}</td>
-              <td>${t.toAmount} ${t.toCurrency}</td>
-              <td>${date}</td>
-            </tr>`;
-          });
-          html += '</tbody></table>';
-          container.innerHTML = html;
-        } else {
-          container.innerHTML = '<p style="color: #888;">Could not load transactions.</p>';
-        }
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-        container.innerHTML = '<p style="color: #888;">Connection error.</p>';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadUserProfile();
-      loadTransactions();
-    });
-  </script>
+    <script src="external-JS/profile.js"></script>
 </body>
 
 </html>

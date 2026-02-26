@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const { faker } = require('@faker-js/faker');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
@@ -36,13 +37,14 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Create new user
+        // Create new user with random avatar
         user = new User({
             firstName: firstName.trim(),
             lastName: lastName.trim(),
             email: email.toLowerCase().trim(),
             password,
-            contactNumber: contactNumber.trim()
+            contactNumber: contactNumber.trim(),
+            avatar: faker.image.avatar()
         });
 
         await user.save();
