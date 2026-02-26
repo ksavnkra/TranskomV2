@@ -24,8 +24,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
     : ['http://localhost:5000', 'http://127.0.0.1:5000'];
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (same-origin, Postman, etc.)
-        if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+        // Allow requests with no origin (same-origin, Postman, serverless, etc.)
+        if (!origin || allowedOrigins.includes(origin) || process.env.VERCEL === '1') return callback(null, true);
         callback(new Error('Not allowed by CORS'));
     },
     credentials: true
