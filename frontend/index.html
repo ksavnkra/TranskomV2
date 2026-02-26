@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Slab:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <title>TRANSKOM : Foreign Currency Exchange Program</title>
+    <link rel="icon" type="image/png" href="rsrc/transkom_logo_1.png">
+    <link rel="stylesheet" href="external-CSS/swiper-bundle.min.css">
+    <link rel="stylesheet" href="external-CSS/card.css">
+    <link rel="stylesheet" href="external-CSS/main.css">
+    <link rel="stylesheet" href="external-CSS/footer.css">
+    <link rel="stylesheet" href="external-CSS/chatbot.css">
+</head>
+
+<body>
+    <nav class="top-navv">
+        <nav class="top-nav">
+            Complete payments stack for the next generation of currency exchange <a
+                href="https://en.wikipedia.org/wiki/Foreign_exchange_market" target="_blank" style="color: white;">Learn
+                more</a><b> &nearr;</b>
+        </nav>
+        <nav class="navbar">
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <i class="fas fa-bars"></i>
+            </label>
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none;"><img src="rsrc/transkom_logo_1.png"
+                        width="50px">Transkom</a>
+            </div>
+            <ul>
+                <li><a class="active" href="#exchange-section" style="text-decoration: none;">Buy/Sell Currency</a></li>
+                <li><a class="active" href="mailto:support@transkom.com" style="text-decoration: none;">Contact</a></li>
+                <li><a class="active" href="#footer" style="text-decoration: none;">Newsletter</a></li>
+                <li id="nav-auth" style="display: none;"><a class="active" href="auth.html" style="text-decoration: none;">Login /
+                        Sign Up</a></li>
+                <li id="nav-profile" style="display: none;"><a class="active" href="profile.html"
+                        style="text-decoration: none;">Profile</a></li>
+                <li id="logout-btn" style="display: none;"><a class="active" href="#"
+                        style="text-decoration: none;">Logout</a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- ======================== HERO SECTION ======================== -->
+    <section class="main">
+        <div class="headings">
+            <div class="side1">
+                <h1 class="heading animate__animated animate__fadeInUp"><br>Enable users to <span style="color: #0e57d7;">buy or sell currency</span> from
+                    our website.</h1>
+                <p class="liltext animate__animated animate__fadeInUp animate__delay-1s">Convert between 40+ global currencies with real-time exchange rates and low 1.5% fees.</p>
+                <br>
+                <a href="#exchange-section" style="text-decoration: none;"><button class="Input-Button animate__animated animate__fadeInUp animate__delay-2s">Try
+                        Now</button></a>
+            </div>
+            <div></div>
+        </div>
+        <div class="bgs">
+            <img class="bgimg" src="./rsrc/Transkom-Background.png" alt="Transkom background">
+        </div>
+    </section>
+
+    <!-- ======================== FEATURES + EXCHANGE SECTION ======================== -->
+    <section class="section2" id="exchange-section">
+        <br><br>
+        <div class="heading-section-2">The <span class="heading-section-2-part-2">Transkom Edge.</span></div>
+        <br>
+        <div class="section2-text">Empowering users with a smart, secure, and borderless currency ecosystem.</div>
+        <br>
+
+        <div class="features-grid"
+            style="display: flex; justify-content: center; gap: 30px; padding: 40px; flex-wrap: wrap;">
+            <div class="feature-card"
+                style="background: #111; color: white; padding: 30px; border-radius: 20px; width: 300px; text-align: left; border: 1px solid #333; transition: transform 0.3s, box-shadow 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 12px 30px rgba(14,87,215,0.3)'"
+                onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+                <i class="fas fa-exchange-alt" style="font-size: 2rem; color: #0e57d7; margin-bottom: 15px;"></i>
+                <h3>Direct Remittance</h3>
+                <p>Send and receive funds globally with zero delay and fixed, transparent exchange rates.</p>
+            </div>
+            <div class="feature-card"
+                style="background: #111; color: white; padding: 30px; border-radius: 20px; width: 300px; text-align: left; border: 1px solid #333; transition: transform 0.3s, box-shadow 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 12px 30px rgba(14,87,215,0.3)'"
+                onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+                <i class="fas fa-coins" style="font-size: 2rem; color: #0e57d7; margin-bottom: 15px;"></i>
+                <h3>Multi-Currency Support</h3>
+                <p>Hold, convert, and manage up to 40+ global currencies in a single, unified account.</p>
+            </div>
+            <div class="feature-card"
+                style="background: #111; color: white; padding: 30px; border-radius: 20px; width: 300px; text-align: left; border: 1px solid #333; transition: transform 0.3s, box-shadow 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 12px 30px rgba(14,87,215,0.3)'"
+                onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+                <i class="fas fa-lock" style="font-size: 2rem; color: #0e57d7; margin-bottom: 15px;"></i>
+                <h3>Enterprise Security</h3>
+                <p>Bank-grade encryption and multi-factor authentication protecting every single transaction.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <iframe src="buy-sell.html"
+                style="width: 100%; height: 750px; border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);"
+                scrolling="no">
+            </iframe>
+        </div>
+    </section>
+
+    <!-- ======================== SECTION 3 — CARDS ======================== -->
+    <section class="section4" style="padding-top: 30px; padding-bottom: 30px;">
+        <div class="headingsection4" style="font-size: 35px; margin-bottom: 20px;">
+            What we've <span style="color: #0e57d7;">built</span>!
+        </div>
+
+        <div class="slide-container swiper">
+            <div class="slide-content">
+                <div class="card-wrapper swiper-wrapper">
+
+                    <div class="card swiper-slide">
+                        <div class="image content">
+                            <span class="overlay"></span>
+                            <div class="card-image">
+                                <img src="rsrc/SECTION-4/liquidity.svg" alt="Liquidity icon" class="card-img">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h2 class="title">Liquidity</h2>
+                            <p class="description">Sourcing liquidity from 10+ exchanges to offer the best price</p>
+                        </div>
+                    </div>
+
+                    <div class="card swiper-slide">
+                        <div class="image content">
+                            <span class="overlay"></span>
+                            <div class="card-image">
+                                <img src="rsrc/SECTION-4/globalPayments.svg" alt="Global payments icon" class="card-img">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h2 class="title">Global Payment Methods</h2>
+                            <p class="description">Bank transfers &amp; local payment methods in 162+ countries</p>
+                        </div>
+                    </div>
+
+                    <div class="card swiper-slide">
+                        <div class="image content">
+                            <span class="overlay"></span>
+                            <div class="card-image">
+                                <img src="rsrc/SECTION-4/riskEngine.svg" alt="Risk engine icon" class="card-img">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h2 class="title">Risk Engine</h2>
+                            <p class="description">Robust risk engine with &lt; 0.05% fraud rate</p>
+                        </div>
+                    </div>
+
+                    <div class="card swiper-slide">
+                        <div class="image content">
+                            <span class="overlay"></span>
+                            <div class="card-image">
+                                <img src="rsrc/SECTION-4/rkyc.png" alt="KYC icon" class="card-img" style="width: 130%;">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h2 class="title">Reusable KYC</h2>
+                            <p class="description">Transkom KYC is shared with the app and reused for seamless
+                                onboarding</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- ======================== FOOTER ======================== -->
+    <footer id="footer">
+        <h1 class="title2">
+            <b>Subscribe</b>
+        </h1>
+        <div class="subscription">
+            <center>
+                <h4 class="sub">
+                    Subscribe to our newsletter for latest updates, also can write feedback.
+                </h4>
+                <form id="newsletter-form">
+                    <input class="mail" type="email" id="mail" placeholder="Enter your email" required>
+                    <button class="button-submit-footer" type="submit">Submit</button>
+                </form>
+                <p id="newsletter-msg" style="margin-top: 15px; color: #4ade80; display: none;"></p>
+            </center>
+        </div>
+    </footer>
+
+    <!-- ======================== SCRIPTS (inside body) ======================== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="external-JS/swiper-bundle.min.js"></script>
+    <script src="js/auth-check.js"></script>
+    <script src="external-JS/main.js"></script>
+    <script>
+        // Newsletter form — uses backend API (no Firebase needed)
+        document.getElementById('newsletter-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const email = document.getElementById('mail').value;
+            const msgEl = document.getElementById('newsletter-msg');
+
+            if (!email) {
+                msgEl.textContent = 'Please enter a valid email address.';
+                msgEl.style.color = '#f87171';
+                msgEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/newsletter/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    msgEl.textContent = 'Subscribed successfully!';
+                    msgEl.style.color = '#4ade80';
+                    msgEl.style.display = 'block';
+                    document.getElementById('mail').value = '';
+                } else {
+                    msgEl.textContent = data.message || 'An error occurred.';
+                    msgEl.style.color = '#f87171';
+                    msgEl.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Newsletter error:', error);
+                msgEl.textContent = 'Connection error. Please ensure the server is running.';
+                msgEl.style.color = '#f87171';
+                msgEl.style.display = 'block';
+            }
+        });
+    </script>
+    <script src="external-JS/chatbot.js"></script>
+</body>
+
+</html>

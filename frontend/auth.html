@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSKOM : Authentication</title>
+    <link rel="icon" type="image/png" href="rsrc/transkom_logo_1.png">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Intl Tel Input CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="external-CSS/auth.css">
+</head>
+
+<body>
+    <div class="logo-container">
+        <a href="index.html">
+            <img src="rsrc/transkom_logo_1.png" alt="Transkom Logo">
+        </a>
+        <h1>Transkom</h1>
+    </div>
+
+    <div class="container" id="container">
+        <!-- Sign Up Form -->
+        <div class="form-container sign-up-container">
+            <form id="sign-up-form">
+                <h1>Create Account</h1>
+                <div style="display: flex; gap: 10px; width: 100%;">
+                    <input type="text" id="first-name" placeholder="First Name" required />
+                    <input type="text" id="last-name" placeholder="Last Name" required />
+                </div>
+                <input type="email" id="email-signup" placeholder="Email" required />
+                <input type="tel" id="contact-number" placeholder="Contact Number" required />
+                <input type="password" id="password-signup" placeholder="Password (min 8 chars)" required minlength="8" />
+                <button type="submit" id="sign-up-btn">Sign Up</button>
+            </form>
+        </div>
+
+        <!-- Sign In Form -->
+        <div class="form-container sign-in-container">
+            <form id="sign-in-form">
+                <h1>Sign In</h1>
+                <input type="email" id="email-signin" placeholder="Email" required />
+                <input type="password" id="password-signin" placeholder="Password" required />
+                <a href="#">Forgot your password?</a>
+                <button type="submit" id="sign-in-btn">Sign In</button>
+            </form>
+        </div>
+
+        <!-- Overlay Container -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth-check.js"></script>
+    <!-- Intl Tel Input JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        // Transition Animation
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        // Intl Tel Input Initialization
+        const phoneInputField = document.querySelector("#contact-number");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            preferredCountries: ["in", "us", "ae"],
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+        // Use relative URL — works in both dev and production
+        const API_URL = '/api/auth';
+
+        // Sign In Logic
+        document.getElementById("sign-in-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('sign-in-btn');
+            const email = document.getElementById("email-signin").value.trim();
+            const password = document.getElementById("password-signin").value;
+
+            if (!email || !password) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Signing In...';
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = "index.html";
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("An error occurred during login. Please ensure the server is running.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
+            }
+        });
+
+        // Sign Up Logic
+        document.getElementById("sign-up-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('sign-up-btn');
+            const firstName = document.getElementById("first-name").value.trim();
+            const lastName = document.getElementById("last-name").value.trim();
+            const email = document.getElementById("email-signup").value.trim();
+            const password = document.getElementById("password-signup").value;
+            const contactNumber = phoneInput.getNumber();
+
+            if (!firstName || !lastName || !contactNumber || !email || !password) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters long.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Signing Up...';
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, contactNumber, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Account created successfully! You can now sign in.");
+                    container.classList.remove("right-panel-active");
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (error) {
+                console.error("Sign-up error:", error);
+                alert("An error occurred during sign-up. Please ensure the backend server is running and .env is configured.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Sign Up';
+            }
+        });
+    </script>
+</body>
+
+</html>

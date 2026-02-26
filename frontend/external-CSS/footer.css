@@ -1,0 +1,61 @@
+#footer {
+    background: black;
+    color: white;
+    padding: 180px 0;
+    text-align: center;
+    width: 100%;
+}
+
+#footer h1.title2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+#footer h4.sub {
+    font-size: 1.2rem;
+    font-weight: 300;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.subscription {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#newsletter-form {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+#newsletter-form input.mail {
+    padding: 20px 35px;
+    border-radius: 40px;
+    border: none;
+    width: 450px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    color: #333;
+}
+
+.button-submit-footer {
+    padding: 15px 45px;
+    min-width: 160px;
+    border-radius: 30px;
+    border: none;
+    background: white;
+    color: black;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.button-submit-footer:hover {
+    transform: scale(1.05);
+    background: #f0f0f0;
+}
