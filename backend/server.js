@@ -56,7 +56,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('MongoDB connected...'))
     .catch(err => {
         console.error('MongoDB connection error:', err.message);
-        process.exit(1);
+        if (process.env.VERCEL !== '1') process.exit(1);
     });
 
 // Handle runtime disconnections
@@ -85,6 +85,11 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
