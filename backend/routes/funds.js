@@ -53,8 +53,54 @@ const RAZORPAY_SUPPORTED = new Set([
     'MYR', 'NGN', 'PHP', 'PKR', 'QAR', 'SAR', 'THB', 'TRY', 'ZAR'
 ]);
 
+// @route   POST /api/funds/add
+// @desc    Add funds directly to wallet (bypasses Razorpay)
+router.post('/add', auth, async (req, res) => {
+    try {
+        const { amount, currency } = req.body;
+        const cur = (currency || 'INR').toUpperCase();
+
+        if (!CURRENCY_CODE_REGEX.test(cur)) {
+            return res.status(400).json({ message: 'Invalid currency code.' });
+        }
+
+        const numAmount = Number(amount);
+        if (!numAmount || numAmount <= 0 || !isFinite(numAmount)) {
+            return res.status(400).json({ message: 'Invalid amount. Must be a positive number.' });
+        }
+
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+
+        // Credit wallet
+        addBalance(user, cur, numAmount);
+        await user.save();
+
+        // Record transaction
+        const transaction = new Transaction({
+            user: user._id,
+            type: 'buy',
+            fromCurrency: cur,
+            toCurrency: cur,
+            fromAmount: numAmount,
+            toAmount: numAmount,
+            status: 'completed'
+        });
+        await transaction.save();
+
+        res.json({
+            message: 'Funds added successfully!',
+            wallet: walletToObject(user),
+            credited: `${numAmount} ${cur}`
+        });
+    } catch (err) {
+        console.error('Add funds error:', err.message);
+        res.status(500).json({ message: 'Failed to add funds. Please try again.' });
+    }
+});
+
 // @route   POST /api/funds/create-order
-// @desc    Create a Razorpay order for adding funds
+// @desc    Create a Razorpay order for adding funds (legacy — requires Razorpay keys)
 router.post('/create-order', auth, async (req, res) => {
     try {
         const { amount, currency } = req.body;

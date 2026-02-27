@@ -25,7 +25,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 app.use(cors({
     origin: function (origin, callback) {
         // Allow requests with no origin (same-origin, Postman, serverless, etc.)
-        if (!origin || allowedOrigins.includes(origin) || process.env.VERCEL === '1') return callback(null, true);
+        if (!origin || allowedOrigins.includes(origin) || process.env.VERCEL) return callback(null, true);
         callback(new Error('Not allowed by CORS'));
     },
     credentials: true
