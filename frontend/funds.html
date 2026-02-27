@@ -96,7 +96,7 @@
                                 required>
                         </div>
                         <button type="submit" class="btn-action btn-add" id="btn-add-funds">
-                            <i class="fas fa-credit-card"></i> Pay with Razorpay
+                            <i class="fas fa-plus-circle"></i> Add Funds
                         </button>
                     </form>
                 </div>
@@ -144,8 +144,8 @@
         </div>
     </main>
 
-    <!-- Razorpay Checkout Script -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Razorpay Checkout Script (not needed — direct mode) -->
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
 
     <script>
         // ===================== FUNDS PAGE LOGIC =====================
@@ -254,7 +254,7 @@
             }
         }
 
-        // ---- Add Funds via Razorpay ----
+        // ---- Add Funds (direct — no Razorpay) ----
         async function handleAddFunds(e) {
             e.preventDefault();
             const currency = document.getElementById('addCurrency').value;
@@ -266,81 +266,32 @@
                 return;
             }
 
+            if (!confirm(`Add ${fmt(amount)} ${currency} to your wallet?`)) return;
+
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating order...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding funds...';
 
             try {
-                // 1. Create order on backend
-                const orderRes = await fetch(`${API_BASE}/funds/create-order`, {
+                const res = await fetch(`${API_BASE}/funds/add`, {
                     method: 'POST',
                     headers: authHeaders(),
                     body: JSON.stringify({ amount, currency })
                 });
-
-                const orderData = await orderRes.json();
-                if (!orderRes.ok) {
-                    alert(orderData.message || 'Failed to create order.');
-                    return;
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`${data.message}\nCredited: ${data.credited}`);
+                    document.getElementById('addFundsForm').reset();
+                    loadWallet();
+                    loadTransactions();
+                } else {
+                    alert(data.message || 'Failed to add funds.');
                 }
-
-                // 2. Open Razorpay checkout
-                const options = {
-                    key: orderData.keyId,
-                    amount: orderData.amount * 100,
-                    currency: orderData.currency,
-                    name: 'Transkom',
-                    description: `Add ${orderData.amount} ${orderData.currency} to wallet`,
-                    order_id: orderData.orderId,
-                    handler: async function (response) {
-                        // 3. Verify payment on backend
-                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-                        try {
-                            const verifyRes = await fetch(`${API_BASE}/funds/verify-payment`, {
-                                method: 'POST',
-                                headers: authHeaders(),
-                                body: JSON.stringify({
-                                    razorpay_order_id: response.razorpay_order_id,
-                                    razorpay_payment_id: response.razorpay_payment_id,
-                                    razorpay_signature: response.razorpay_signature,
-                                    amount: orderData.amount,
-                                    currency: orderData.currency
-                                })
-                            });
-                            const verifyData = await verifyRes.json();
-                            if (verifyRes.ok) {
-                                alert(`${verifyData.message}\nCredited: ${verifyData.credited}`);
-                                document.getElementById('addFundsForm').reset();
-                                loadWallet();
-                                loadTransactions();
-                            } else {
-                                alert(verifyData.message || 'Verification failed.');
-                            }
-                        } catch (err) {
-                            console.error('Verify error:', err);
-                            alert('Payment verification failed. Please contact support.');
-                        }
-                    },
-                    prefill: {},
-                    theme: { color: '#0e57d7' },
-                    modal: {
-                        ondismiss: function () {
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-credit-card"></i> Pay with Razorpay';
-                        }
-                    }
-                };
-
-                const rzp = new Razorpay(options);
-                rzp.on('payment.failed', function (response) {
-                    alert('Payment failed: ' + response.error.description);
-                });
-                rzp.open();
             } catch (err) {
                 console.error('Add funds error:', err);
-                alert('Failed to initiate payment.');
+                alert('Failed to add funds. Please try again.');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-credit-card"></i> Pay with Razorpay';
+                btn.innerHTML = '<i class="fas fa-plus-circle"></i> Add Funds';
             }
         }
 

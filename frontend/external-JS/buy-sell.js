@@ -233,6 +233,14 @@ async function handleSubmit(event) {
             document.getElementById('exchangeForm').reset();
             document.getElementById('exchangeRate').innerHTML = 'Select currencies to see exchange rate';
             document.getElementById('feeInfo').innerHTML = 'Transkom\'s Transaction Fee: 1.5%';
+            currentRate = null;
+
+            // Refresh wallet & dropdown so balances update immediately
+            if (currentMode === 'sell') {
+                await filterPayCurrencyToWallet();
+            } else {
+                await filterPayCurrencyForBuy();
+            }
         } else {
             alert("Error: " + data.message);
         }
